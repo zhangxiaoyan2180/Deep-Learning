@@ -1,0 +1,87 @@
+2026.1.13
+一、背景
+
+面对多输入Input
+vector set as input
+1.输入一句话
+one——hot encoding：10w个词，10w维度，每一个词分一个维度
+word encoding：按照语意编码，每一个词分一个向量
+2.一段声音讯号
+一个窗口内的向量称为frame
+3.一个图也是向量集
+node as a vector(人 分子)
+
+
+what is the output？
+1.each vector has a label.
+输入输出数量一致
+2.the whole sequence has a label.
+3.model decides the number of label itself.
+
+
+二、第一种情况：each vector has a label.(sequence labeling)
+eg:  i saw a saw.
+面对同一个fc全连接层，第一个saw和第二个saw词性判断输出结果应该一样
+避免这种情况，考虑上下文（FC can consider the neighbour，设置一个window）
+window的长度如何考虑？引入self-attention技术
+
+self-attention:
+假如我们有4个输入a1,a2,a3,a4
+（可以是输入，也可以是hidden层的输出，因为self—attention可以堆叠 input--self--fc--self--fc--...--output）
+a1,a2,a3,a4经过self-attention层处理，会输出b1,b2,b3,b4
+为了输出这个b，需要全局考虑a1,a2,a3,a4的两两向量关联性alpha
+alpha的计算方法Dot-product:两个向量分别乘以不同的矩阵Wq,Wk,向量q=Wq*a1,k=Wk*a2, alpha=q*k(点积运算)
+（另一种计算alpha方法：Additive）
+
+举例说明b1的计算：（q,k,v）
+q叫query查询，k叫key，q1=Wq*a1,k2=Wk*a2,alpha1,2=q1*k2(点积运算)
+算出alpha1、alpha2、alpha3、alpha4，通过softmax得到新的alpha派1、alpha派2、alpha派3、alpha派4
+计算向量v：v1=Wv*a1,v2=Wv*a2,...
+b1=alpha派1*v1+alpha派2*v2+....(求和)
+
+从矩阵乘法的角度看self-attention
+(q1,q2,q3,q4)=Wq*(a1,a2,a3,a4)
+同理k=Wk*a,v=Wv*a
+alpha1,1  k1
+alpha1,2 =k2 * q1
+alpha1,3  k3
+alpha1,4  k4
+简写成A=Kt*Q，对A做softmax得到A派
+B=V*A派 得到所有的b
+这个调整就是对Wq Wk Wv做调整
+
+
+Multi-head Self-attention(Different types of relevance):
+
+不同的q负责不同的相关性：qi=Wq*ai,qi再乘不同的矩阵得到qi,1和qi,2
+同理，得到不同的ki,1和ki,2   vi,1和vi,2
+通过计算得到bi,1和bi,2，最后乘以Wo，得到最后答案bi
+
+三、Positional Encoding
+位置的咨询：在传统的 RNN（循环神经网络）中，数据是一个接一个进入模型的，模型天然就知道谁先谁后。
+但 Self-Attention（自注意力机制） 不同。它像是一个“大熔炉”，一次性把所有的词（Token）全部丢进去并行处理。
+text{Input to Attention} = text{Feature Vector (Content)} + text{Position Vector (Context)}
+
+四、self-attention的应用
+
+1.self-attention for speech
+speech is a very long vector sequence,if input sequence is length L,attention matrix的复杂度就是L平方
+因此采用范围采样truncated self-attention
+
+2.self-attention for image
+an image can also be considered as a vector set
+对一个彩色照片，每一个像素点就是一个向量（R,G,B）
+
+3.self-attention vs CNN
+CNN只考虑选定区域的self-attention，可以说CNN是简化版的self-attention
+"On the Relationship between Self-Attention and Convolutional Layers"论文数学证明
+
+4.self-attention vs RNN
+RNN也可以是双向的，也可以是考虑了整个的input
+区别就是（1）不是相邻的向量要考虑彼此 要先将内容存在内存 才能被对方读取
+（2）RNN不能平行计算，s-a可以平行计算 视作矩阵
+
+
+5.self-attention for graph（node and edge）
+graph由于自己带边，反映点和点的关系，attention Martix的形成可以参考图内容
+self-attention vs GNN（graph neural network）

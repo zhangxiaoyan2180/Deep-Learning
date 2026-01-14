@@ -1,0 +1,75 @@
+"""
+RNN:Recurrent Neural Network
+
+1.潜变量自回归模型
+潜变量（hidden）ht===ht-1+xt-1           hidden（现实存在）和latent（现实可以不存在）
+观察变量xt===ht+xt-1
+
+2.循环神经网络(与MLP的区分)
+隐变量ht 观察xt 输出ot
+
+
+ot是ht生成的预测
+类似 xt输入“你”
+ot根据ht生成
+ot预测“好”
+ot不能看见xt
+
+最简单的rnn通过whh（隐藏变量之间的权重反应时序信息）
+
+3.衡量语言模型的好坏可以用“平均交叉熵”or“困惑度”
+
+
+4.梯度剪裁（能有效的预防梯度爆炸）
+
+
+5.RNN的应用
+文本生成
+文本分类
+问答、机器翻译
+tag生成
+
+
+"""
+
+
+
+
+"""
+
+李宏毅版本RNN
+
+
+隐藏层的输出会被存在内存
+
+第一步：再放入input时，需要先在memory中放入数据
+
+hidden（t）=x(t)+hidden(t-1)
+
+在rnn中 inputs顺序的不同 outputs也不同
+
+
+rnn也可以变深 加入多层的hidden
+
+
+Elman Network && Jordan Network
+Bidirectional RNN:双向RNN
+
+
+从RNN到LSTM（Long Short-term Memory）
+见笔记
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
