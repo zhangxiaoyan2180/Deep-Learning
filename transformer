@@ -58,3 +58,7 @@ tip：decoder的最后输出是“decoder”，在decoder训练的时候 给出�
 the red path is greedy decoding
 the green path is best one
 如果找到最好的path：找一个估测的路线 beam search
+
+
+注释：how to do the optimization?
+when you don't know how to optimize,just use reinforcement learning(RL)!
