@@ -1,0 +1,60 @@
+2026.1.14
+一、transformer：is a sequence-to-sequence model ,input a sequence,output a sequence,the output length
+        is determined by model.
+       比如说输入长度是T，输出长度为N，由模型决定
+
+二、sequence-to-sequence的应用
+1.台语的语音翻译
+2.台语的语音合成
+3.聊天机器人
+NLP很多问题可以被视作Question-Answering问题（例如sentiment analysis）
+Question-Answering可以被视作sequence-to-sequence model,   |  question,context-->Seq2seq-->answer  |
+"Deep Learning for Human Language Processing"客制化的Seq2seq模型
+4.文法剖析Syntactic Parsing
+"deep learning is very powerful"--->(s (NP deep learning)(VP  IS(ADJV very powerful)))
+5.Multi-label Classification:一个文件可能属于多个类，由model决定文件属于哪几个类
+6.Object Detection:https://arxiv.org/abs/2005.12872
+
+三、Seq2seq的结构
+
+
+3.1 encoder：输入一排向量，输出一排的向量
+X-->block-->block-->...-->block-->H
+block:X-->self-attention--->X'--->FC--->H
+block还可以引入残差residual，输入b，得到a，最后输出a+b
+norm（layer normalization）：计算输入的均值m 方差zeta 标准化x'=(x-m)/zeta
+在经过FC层时，也要做残差a+b，再做norm
+故一个block的输出是残差＋norm
+"on layer normalization in the transformer architecture"
+
+李宏毅老师的总结建议： > * 做图片处理（CNN）时，大家习惯用 BN。
+做文字/语音处理（Transformer/BERT/GPT）时，一定要用 LN。
+
+
+3.2 Decoder
+3.2.1 Autoregressive decoder
+语音辨识做例子
+
+3.2.2 Non-Autoregressive decoder (NAT)
+
+
+3.3 encoder和decoder的联系：cross attention
+decoder提供q,encoder提供k，v
+
+不同的cross attention的连接方式：不一定非要是encoder的最后输出与decoder的q进行连接
+
+3.4transformer是如何训练？
+目标：最小化交叉熵
+例如,目标结果是（0，1,0，0）表示“机”，训练结果是（0.1,0.7,0.1,0.1)，相当于完成一次分类任务
+tip：decoder的最后输出是“decoder”，在decoder训练的时候 给出正确答案Teacher Forcing
+
+3.4.1 Copy Mechanism:Decoder不需要原创 只要给出和encoder一样的信息就行
+例子：聊天机器人、做摘要summarization、pointer network、copy network
+
+3.4.2 Guided Attention
+例子：语音辨识、语音合成
+
+3.4.3 Beam Search
+the red path is greedy decoding
+the green path is best one
+如果找到最好的path：找一个估测的路线 beam search
